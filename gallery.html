@@ -113,6 +113,7 @@
             overflow: hidden;
             box-shadow: 0 10px 40px rgba(0,0,0,0.1);
             border: 1px solid #f0f0f0;
+            position: relative;
         }
 
         .video-card video {
@@ -230,12 +231,41 @@
             font-size: 1.4rem;
             letter-spacing: 4px;
         }
+
+        /* Audio control indicator */
+        .audio-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 77, 109, 0.9);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            z-index: 999;
+            display: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .audio-indicator:hover {
+            background: rgba(255, 77, 109, 1);
+            transform: scale(1.05);
+        }
+
+        .audio-indicator.active {
+            display: block;
+        }
     </style>
 </head>
 
 <body>
 
     <div id="particles"></div>
+
+    <div class="audio-indicator" id="audioIndicator">
+        <span id="audioStatus">🔊 Musik Menyala</span>
+    </div>
 
     <div class="page-content">
 
@@ -289,22 +319,61 @@ no matter where life takes us, i promise to keep choosing you, today, tomorrow, 
     </div>
 
     <script>
-        // ===== BACKGROUND AUDIO (nyambung dari halaman utama) =====
+        // ===== BACKGROUND AUDIO MANAGEMENT =====
         const bgAudio = document.getElementById('bgAudio');
+        const audioIndicator = document.getElementById('audioIndicator');
+        const audioStatus = document.getElementById('audioStatus');
+
+        // Restore posisi dan state audio dari localStorage
         const savedTime = parseFloat(localStorage.getItem('audioTime') || '0');
-        if (savedTime > 0) bgAudio.currentTime = savedTime;
-        bgAudio.play().catch(() => {});
+        const wasPlaying = localStorage.getItem('audioPlaying') === 'true';
 
-        // Update posisi terus agar saat kembali ke index bisa nyambung
-        setInterval(() => {
-            if (!bgAudio.paused) localStorage.setItem('audioTime', bgAudio.currentTime);
-        }, 1000);
+        if (savedTime > 0) {
+            bgAudio.currentTime = savedTime;
+        }
 
-        window.addEventListener('beforeunload', () => {
-            localStorage.setItem('audioTime', bgAudio.currentTime);
+        // Jika sebelumnya sedang diputar, lanjutkan
+        if (wasPlaying) {
+            bgAudio.play().catch(() => {});
+        }
+
+        // Update tampilan indicator
+        function updateIndicator() {
+            audioIndicator.classList.add('active');
+            if (bgAudio.paused) {
+                audioStatus.textContent = '⏸️ Musik Pause';
+            } else {
+                audioStatus.textContent = '🔊 Musik Menyala';
+            }
+        }
+
+        bgAudio.addEventListener('play', updateIndicator);
+        bgAudio.addEventListener('pause', updateIndicator);
+        updateIndicator();
+
+        // Klik indicator untuk toggle audio
+        audioIndicator.addEventListener('click', function() {
+            if (bgAudio.paused) {
+                bgAudio.play().catch(() => {});
+            } else {
+                bgAudio.pause();
+            }
         });
 
-        // ===== VIDEO =====
+        // Update posisi audio secara berkala
+        setInterval(() => {
+            if (!bgAudio.paused) {
+                localStorage.setItem('audioTime', bgAudio.currentTime);
+            }
+        }, 1000);
+
+        // Save state sebelum navigasi
+        window.addEventListener('beforeunload', () => {
+            localStorage.setItem('audioTime', bgAudio.currentTime);
+            localStorage.setItem('audioPlaying', !bgAudio.paused);
+        });
+
+        // ===== VIDEO CONTROL =====
         const vid = document.getElementById('mainVideo');
         const wrapper = document.getElementById('videoWrapper');
         const placeholder = document.getElementById('videoPlaceholder');
@@ -324,6 +393,10 @@ no matter where life takes us, i promise to keep choosing you, today, tomorrow, 
         vid.addEventListener('play', () => {
             videoPlayBtn.querySelector('.btn-icon').textContent = '⏸️';
             videoPlayText.textContent = 'Pause Video';
+            // Pause audio saat video diputar
+            if (!bgAudio.paused) {
+                bgAudio.pause();
+            }
         });
 
         vid.addEventListener('pause', () => {
@@ -385,4 +458,5 @@ no matter where life takes us, i promise to keep choosing you, today, tomorrow, 
     </script>
 
 </body>
+
 </html>
