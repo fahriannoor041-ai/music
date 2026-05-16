@@ -393,10 +393,6 @@ no matter where life takes us, i promise to keep choosing you, today, tomorrow, 
         vid.addEventListener('play', () => {
             videoPlayBtn.querySelector('.btn-icon').textContent = '⏸️';
             videoPlayText.textContent = 'Pause Video';
-            // Pause audio saat video diputar
-            if (!bgAudio.paused) {
-                bgAudio.pause();
-            }
         });
 
         vid.addEventListener('pause', () => {
