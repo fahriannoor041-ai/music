@@ -323,6 +323,7 @@ no matter where life takes us, i promise to keep choosing you, today, tomorrow, 
         const bgAudio = document.getElementById('bgAudio');
         const audioIndicator = document.getElementById('audioIndicator');
         const audioStatus = document.getElementById('audioStatus');
+        const vid = document.getElementById('mainVideo');
 
         // Restore posisi dan state audio dari localStorage
         const savedTime = parseFloat(localStorage.getItem('audioTime') || '0');
@@ -347,8 +348,20 @@ no matter where life takes us, i promise to keep choosing you, today, tomorrow, 
             }
         }
 
-        bgAudio.addEventListener('play', updateIndicator);
-        bgAudio.addEventListener('pause', updateIndicator);
+        bgAudio.addEventListener('play', () => {
+            updateIndicator();
+            // Auto-play video jika musik dimulai
+            if (!vid.paused) return;
+            vid.play().catch(() => {});
+        });
+
+        bgAudio.addEventListener('pause', () => {
+            updateIndicator();
+            // Pause video jika musik dipause
+            if (vid.paused) return;
+            vid.pause();
+        });
+
         updateIndicator();
 
         // Klik indicator untuk toggle audio
@@ -374,7 +387,6 @@ no matter where life takes us, i promise to keep choosing you, today, tomorrow, 
         });
 
         // ===== VIDEO CONTROL =====
-        const vid = document.getElementById('mainVideo');
         const wrapper = document.getElementById('videoWrapper');
         const placeholder = document.getElementById('videoPlaceholder');
         const videoPlayBtn = document.getElementById('videoPlayBtn');
@@ -383,6 +395,10 @@ no matter where life takes us, i promise to keep choosing you, today, tomorrow, 
         vid.addEventListener('canplay', () => {
             wrapper.style.display = 'block';
             placeholder.style.display = 'none';
+            // Auto-play video jika musik sudah playing
+            if (!bgAudio.paused) {
+                vid.play().catch(() => {});
+            }
         });
 
         vid.addEventListener('error', () => {
