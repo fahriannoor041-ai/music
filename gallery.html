@@ -1,252 +1,388 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Momen Kita</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Momen Kita</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
 
-<style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient(180deg, #ffffff 0%, #d0d0d0 60%, #a0a0a0 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            overflow-x: hidden;
+        }
 
-body{
-    font-family:'Segoe UI',sans-serif;
-    background:linear-gradient(180deg,#ffffff 0%,#d9d9d9 60%,#a8a8a8 100%);
-    min-height:100vh;
-    display:flex;
-    justify-content:center;
-    padding:30px 15px;
-    overflow-x:hidden;
-}
+        /* ===== PARTICLES ===== */
+        #particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
 
-.container{
-    width:100%;
-    max-width:380px;
-    display:flex;
-    flex-direction:column;
-    gap:20px;
-}
+        .particle.heart {
+            position: absolute;
+            bottom: -40px;
+            animation: floatUp linear infinite;
+            opacity: 0;
+        }
 
-.title{
-    text-align:center;
-}
+        .particle.flower {
+            position: absolute;
+            top: -30px;
+            animation: fallDown linear infinite;
+            opacity: 0;
+        }
 
-.title h1{
-    font-size:1.8rem;
-    color:#333;
-}
+        @keyframes floatUp {
+            0%   { transform: translateY(0) rotate(0deg) scale(0.8); opacity: 0; }
+            10%  { opacity: 0.8; }
+            80%  { opacity: 0.6; }
+            100% { transform: translateY(-110vh) rotate(20deg) scale(1.2); opacity: 0; }
+        }
 
-.title p{
-    color:#888;
-    margin-top:5px;
-    font-size:0.9rem;
-}
+        @keyframes fallDown {
+            0%   { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10%  { opacity: 0.7; }
+            90%  { opacity: 0.5; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        }
 
-.video-card{
-    background:#fff;
-    border-radius:25px;
-    overflow:hidden;
-    box-shadow:0 10px 30px rgba(0,0,0,0.12);
-}
+        /* ===== CONTENT ===== */
+        .page-content {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 380px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+        }
 
-video{
-    width:100%;
-    max-height:70vh;
-    background:#111;
-    display:block;
-}
+        .back-btn {
+            align-self: flex-start;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            color: #888;
+            font-size: 0.85rem;
+            font-weight: bold;
+            transition: color 0.2s;
+        }
 
-.caption{
-    padding:18px;
-    text-align:center;
-}
+        .back-btn:hover {
+            color: #ff4d6d;
+        }
 
-.caption h3{
-    color:#333;
-    margin-bottom:5px;
-}
+        .page-title {
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: #333;
+            text-align: center;
+            margin: 0;
+        }
 
-.caption p{
-    color:#888;
-    font-size:0.85rem;
-}
+        .page-subtitle {
+            font-size: 0.85rem;
+            color: #aaa;
+            text-align: center;
+            margin: -16px 0 0;
+            font-style: italic;
+        }
 
-.play-btn{
-    border:none;
-    background:linear-gradient(135deg,#ff8fab,#ff4d6d);
-    color:white;
-    padding:14px;
-    border-radius:50px;
-    font-size:1rem;
-    font-weight:bold;
-    cursor:pointer;
-    box-shadow:0 5px 15px rgba(255,77,109,0.4);
-}
+        /* ===== VIDEO CARD ===== */
+        .video-card {
+            width: 100%;
+            background: #fff;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            border: 1px solid #f0f0f0;
+        }
 
-.message-box{
-    background:#fff;
-    border-radius:25px;
-    padding:25px;
-    box-shadow:0 10px 30px rgba(0,0,0,0.1);
-    text-align:center;
-}
+        .video-card video {
+            width: 100%;
+            max-height: 70vh;
+            display: block;
+            background: #111;
+            object-fit: cover;
+        }
 
-.message-box h2{
-    color:#ff4d6d;
-    margin-bottom:15px;
-}
+        .video-caption {
+            padding: 16px 20px;
+            text-align: center;
+        }
 
-.message-box p{
-    color:#666;
-    line-height:1.8;
-    font-size:0.92rem;
-}
+        .video-caption h3 {
+            margin: 0 0 6px;
+            font-size: 1rem;
+            color: #333;
+        }
 
-.footer{
-    margin-top:15px;
-    font-size:1.4rem;
-}
+        .video-caption p {
+            margin: 0;
+            font-size: 0.82rem;
+            color: #aaa;
+            font-style: italic;
+        }
 
-#particles{
-    position:fixed;
-    inset:0;
-    pointer-events:none;
-    z-index:-1;
-}
+        /* ===== PLACEHOLDER if no video ===== */
+        .no-video {
+            width: 100%;
+            background: #fff;
+            border-radius: 24px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            border: 2px dashed #ddd;
+            padding: 50px 20px;
+            text-align: center;
+            color: #bbb;
+        }
 
-.particle{
-    position:absolute;
-    bottom:-20px;
-    animation:floatUp linear forwards;
-    opacity:0;
-}
+        .no-video .icon {
+            font-size: 3rem;
+            margin-bottom: 12px;
+        }
 
-@keyframes floatUp{
-    0%{
-        transform:translateY(0);
-        opacity:0;
-    }
+        .no-video p {
+            margin: 0;
+            font-size: 0.9rem;
+        }
 
-    10%{
-        opacity:1;
-    }
+        /* Heart decoration */
+        .heart-divider {
+            font-size: 1.2rem;
+            color: #ffb3c1;
+            letter-spacing: 8px;
+        }
 
-    100%{
-        transform:translateY(-120vh);
-        opacity:0;
-    }
-}
-</style>
+        /* ===== VIDEO PLAY BUTTON ===== */
+        .video-play-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 14px 0;
+            background: linear-gradient(135deg, #ff8fab, #ff4d6d);
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 77, 109, 0.35);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .video-play-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 77, 109, 0.5);
+        }
+
+        .video-play-btn .btn-icon {
+            font-size: 1.3rem;
+        }
+
+        /* ===== MESSAGE BOX ===== */
+        .message-box {
+            width: 100%;
+            background: #fff;
+            border-radius: 24px;
+            padding: 24px 22px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            border: 1px solid #f0f0f0;
+            text-align: center;
+        }
+
+        .message-box .msg-title {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #ff4d6d;
+            margin: 0 0 10px;
+        }
+
+        .message-box .msg-text {
+            font-size: 0.9rem;
+            color: #666;
+            line-height: 1.7;
+            font-style: italic;
+            margin: 0;
+            white-space: pre-line;
+        }
+
+        .message-box .msg-footer {
+            margin-top: 14px;
+            font-size: 1.4rem;
+            letter-spacing: 4px;
+        }
+    </style>
 </head>
 
 <body>
 
-<div id="particles"></div>
+    <div id="particles"></div>
 
-<div class="container">
+    <div class="page-content">
 
-    <div class="title">
-        <h1>💑 Momen Kita</h1>
-        <p>Kenangan indah yang selalu diingat...</p>
-    </div>
+        <a href="index.html" class="back-btn">← Kembali</a>
 
-    <!-- AUDIO -->
-    <audio id="bgAudio" autoplay loop>
-        <source src="videoplayback.m4a" type="audio/mpeg">
-    </audio>
+        <h1 class="page-title">💑 Momen Kita</h1>
+        <p class="page-subtitle">Kenangan indah yang selalu diingat...</p>
 
-    <!-- VIDEO -->
-    <div class="video-card">
+        <div class="heart-divider">❤ ❤ ❤</div>
 
-        <video
-            id="mainVideo"
-            controls
-            autoplay
-            muted
-            playsinline
-        >
-            <source src="./withyou.mp4" type="video/mp4">
-        </video>
+        <audio id="bgAudio" loop>
+            <source src="videoplayback.m4a" type="audio/mpeg">
+        </audio>
 
-        <div class="caption">
-            <h3>Kebersamaan Kita 🎬</h3>
-            <p>"Setiap detik bersamamu adalah kenangan terindah"</p>
+        <div id="videoWrapper" class="video-card" style="display:none;">
+            <video id="mainVideo" playsinline disablePictureInPicture controlsList="nodownload nofullscreen noremoteplayback">
+                <source src="withyou.mp4" type="video/mp4">
+            </video>
+            <div class="video-caption">
+                <h3>Kebersamaan Kita 🎬</h3>
+                <p>"Setiap detik bersamamu adalah kenangan terindah"</p>
+            </div>
         </div>
-    </div>
 
-    <!-- BUTTON -->
-    <button class="play-btn" onclick="toggleVideo()">
-        ▶️ Putar / Pause Video
-    </button>
-
-    <!-- MESSAGE -->
-    <div class="message-box">
-        <h2>💌 Pesan Untukmu</h2>
-
-        <p>
-            our moments, our time, and every laugh we've shared are treasures i hold close to my heart.
-            <br><br>
-
-            the joy you bring, the smile you paint upon my face, and the sparkle in your eyes make me want to lose myself there.
-            <br><br>
-
-            through every good and every bad, we have walked hand in hand, and still, we choose each other.
-            <br><br>
-
-            your presence fills spaces in my heart i never knew were empty.
-            <br><br>
-
-            no matter where life takes us, i promise to keep choosing you, today, tomorrow, and in every lifetime.
-        </p>
-
-        <div class="footer">
-            ❤️ 💕 ❤️
+        <div id="videoPlaceholder" class="no-video">
+            <div class="icon">🎬</div>
+            <p>Pastikan file video bernama <strong>withyou.mp4</strong><br>berada di folder utama bersama file ini.</p>
         </div>
+
+        <button class="video-play-btn" id="videoPlayBtn" onclick="toggleVideo()">
+            <span class="btn-icon">▶️</span>
+            <span id="videoPlayText">Putar Video</span>
+        </button>
+
+        <div class="message-box">
+            <p class="msg-title">💌 Pesan Untukmu</p>
+            <p class="msg-text">our moments, our time, and every laugh we've shared are treasures i hold close to my heart.<br><br>
+
+the joy you bring, the smile you paint upon my face, and the sparkle in your eyes make me want to lose myself there, to live in that light forever.<br><br>
+
+through every good and every bad, we have walked hand in hand, and still, we choose each other.<br><br>
+
+your presence fills spaces in my heart i never knew were empty, and loving you makes me want to become a better man, every single day.<br><br>
+
+i want to be your boyfriend, your best friend, your brother, and the place you always feel safe, your home.<br>
+i pray that our love grows deeper with time, stronger with every trial, and softer with every understanding.<br>
+no matter where life takes us, i promise to keep choosing you, today, tomorrow, and in every lifetime.</p>
+            <div class="msg-footer">❤️ 💕 ❤️</div>
+        </div>
+
     </div>
 
-</div>
+    <script>
+        // ===== BACKGROUND AUDIO (nyambung dari halaman utama) =====
+        const bgAudio = document.getElementById('bgAudio');
+        const savedTime = parseFloat(localStorage.getItem('audioTime') || '0');
+        if (savedTime > 0) bgAudio.currentTime = savedTime;
+        bgAudio.play().catch(() => {});
 
-<script>
-const video = document.getElementById("mainVideo");
+        // Update posisi terus agar saat kembali ke index bisa nyambung
+        setInterval(() => {
+            if (!bgAudio.paused) localStorage.setItem('audioTime', bgAudio.currentTime);
+        }, 1000);
 
-function toggleVideo(){
-    if(video.paused){
-        video.play();
-    }else{
-        video.pause();
-    }
-}
+        window.addEventListener('beforeunload', () => {
+            localStorage.setItem('audioTime', bgAudio.currentTime);
+        });
 
-/* PARTICLES */
-const container = document.getElementById("particles");
-const hearts = ["❤️","💕","💖","💗","💞"];
+        // ===== VIDEO =====
+        const vid = document.getElementById('mainVideo');
+        const wrapper = document.getElementById('videoWrapper');
+        const placeholder = document.getElementById('videoPlaceholder');
+        const videoPlayBtn = document.getElementById('videoPlayBtn');
+        const videoPlayText = document.getElementById('videoPlayText');
 
-function createParticle(){
+        vid.addEventListener('canplay', () => {
+            wrapper.style.display = 'block';
+            placeholder.style.display = 'none';
+        });
 
-    const el = document.createElement("div");
+        vid.addEventListener('error', () => {
+            wrapper.style.display = 'none';
+            placeholder.style.display = 'block';
+        });
 
-    el.classList.add("particle");
+        vid.addEventListener('play', () => {
+            videoPlayBtn.querySelector('.btn-icon').textContent = '⏸️';
+            videoPlayText.textContent = 'Pause Video';
+        });
 
-    el.innerHTML = hearts[Math.floor(Math.random()*hearts.length)];
+        vid.addEventListener('pause', () => {
+            videoPlayBtn.querySelector('.btn-icon').textContent = '▶️';
+            videoPlayText.textContent = 'Putar Video';
+        });
 
-    el.style.left = Math.random()*100 + "vw";
+        function toggleVideo() {
+            if (vid.paused) {
+                vid.play();
+            } else {
+                vid.pause();
+            }
+        }
 
-    el.style.fontSize = (Math.random()*20+15) + "px";
+        vid.load();
 
-    el.style.animationDuration = (Math.random()*5+5) + "s";
+        // ===== PARTICLE SYSTEM =====
+        const container = document.getElementById('particles');
+        const hearts  = ['❤️','🩷','💕','💗','💓'];
+        const flowers = ['✿','❀','✾','❁','✽'];
 
-    container.appendChild(el);
+        function randomBetween(min, max) { return Math.random() * (max - min) + min; }
 
-    setTimeout(()=>{
-        el.remove();
-    },10000);
-}
+        function createHeart() {
+            const el = document.createElement('div');
+            el.classList.add('particle','heart');
+            el.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+            el.style.fontSize = randomBetween(14, 24) + 'px';
+            el.style.left = randomBetween(0, 100) + 'vw';
+            const dur = randomBetween(5, 10), del = randomBetween(0, 5);
+            el.style.animationDuration = dur + 's';
+            el.style.animationDelay = del + 's';
+            container.appendChild(el);
+            setTimeout(() => el.remove(), (dur + del) * 1000 + 500);
+        }
 
-setInterval(createParticle,500);
-</script>
+        function createFlower() {
+            const el = document.createElement('div');
+            el.classList.add('particle','flower');
+            el.textContent = flowers[Math.floor(Math.random() * flowers.length)];
+            el.style.fontSize = randomBetween(12, 22) + 'px';
+            const g = Math.floor(randomBetween(150, 230));
+            el.style.color = `rgb(${g},${g},${g})`;
+            el.style.left = randomBetween(0, 100) + 'vw';
+            const dur = randomBetween(6, 12), del = randomBetween(0, 4);
+            el.style.animationDuration = dur + 's';
+            el.style.animationDelay = del + 's';
+            container.appendChild(el);
+            setTimeout(() => el.remove(), (dur + del) * 1000 + 500);
+        }
+
+        setInterval(createHeart, 600);
+        setInterval(createFlower, 500);
+        for (let i = 0; i < 8; i++) {
+            setTimeout(createHeart, i * 200);
+            setTimeout(createFlower, i * 150);
+        }
+    </script>
 
 </body>
 </html>
