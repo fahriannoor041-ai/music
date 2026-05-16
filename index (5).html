@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Player Minimalist</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            background: linear-gradient(180deg, #ffffff 0%, #d0d0d0 60%, #a0a0a0 100%);
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 40px 20px;
+        }
+
+        /* ===== FLOATING PARTICLES CONTAINER ===== */
+        #particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            top: -60px;
+            animation: fall linear infinite;
+            user-select: none;
+        }
+
+        /* Hearts float upward */
+        .particle.heart {
+            animation: floatUp linear infinite;
+            bottom: -60px;
+            top: auto;
+            font-size: 18px;
+            opacity: 0;
+        }
+
+        /* Flowers fall downward */
+        .particle.flower {
+            animation: fallDown linear infinite;
+            font-size: 16px;
+            opacity: 0;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) rotate(0deg) scale(0.8);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+            }
+            80% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-110vh) rotate(20deg) scale(1.2);
+                opacity: 0;
+            }
+        }
+
+        @keyframes fallDown {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.7;
+            }
+            90% {
+                opacity: 0.5;
+            }
+            100% {
+                transform: translateY(110vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* ===== PLAYER CARD ===== */
+        .player-card {
+            position: relative;
+            z-index: 1;
+            width: 320px;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 30px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid #f0f0f0;
+        }
+
+        .album-art {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            background: #f9f9f9;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .album-art img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: 50% 15% !important;
+        }
+
+        .info h2 {
+            margin: 10px 0 5px;
+            font-size: 1.3rem;
+            color: #333;
+        }
+
+        .info p {
+            margin: 0 0 20px;
+            color: #1db954;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        .btn {
+            cursor: pointer;
+            font-size: 28px;
+            color: #555;
+            transition: 0.2s;
+        }
+
+        .btn:hover {
+            color: #1db954;
+        }
+
+        .play-pause {
+            font-size: 50px;
+            color: #1db954;
+        }
+
+        .lyrics-section {
+            text-align: left;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+
+        .lyrics-text {
+            font-size: 0.9rem;
+            color: #777;
+            font-style: italic;
+            line-height: 1.5;
+        }
+
+        .gallery-btn {
+            display: block;
+            margin-top: 20px;
+            padding: 12px 0;
+            background: linear-gradient(135deg, #ff8fab, #ff4d6d);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(255, 77, 109, 0.35);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .gallery-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 77, 109, 0.5);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="particles"></div>
+
+    <div class="player-card">
+        <div class="album-art">
+            <img src="jpg/profil.jpg" alt="Foto Album">
+        </div>
+
+        <div class="info">
+            <h2>Love</h2>
+            <p>always together</p>
+        </div>
+
+        <audio id="myAudio" autoplay loop>
+            <source src="jpg/videoplayback.m4a" type="audio/mpeg">
+        </audio>
+
+        <div class="controls">
+            <div class="btn">⏮</div>
+            <div class="btn play-pause" id="playBtn" onclick="togglePlay()">▶</div>
+            <div class="btn">⏭</div>
+        </div>
+
+        <div class="lyrics-section">
+            <p class="lyrics-text">
+                <br><br>
+
+                "this gift is my way of showing how grateful i am.<br><br>
+
+                to remind you how worthy you are of love,<br>
+                to show that not everyone walks away,<br>
+                and to tell you that i choose to stay, even at your worst.<br><br>
+
+                still, this gift can never fully express how precious you are to me,<br>
+                nor how deeply i adore you.<br><br>
+
+                you are the love of my life, and no one could ever replace you.<br><br>
+
+                some say they would die for you, others say they would kill for you.<br>
+                for you, i choose to live in this cruel world.<br>
+                i choose kindness, i choose growth, i choose to be better.<br><br>
+
+                you mean the world to me.<br>
+                you complete me.<br>
+                and most importantly, you love me without hesitation —<br>
+                and i love you more than anything, tiara hanifah."
+            </p>
+        </div>
+
+        <a href="gallery.html" class="gallery-btn">🎞️ Lihat Momen Kita</a>
+    </div>
+
+    <script>
+        const audio = document.getElementById("myAudio");
+        const playBtn = document.getElementById("playBtn");
+
+        audio.addEventListener('play', () => { playBtn.innerHTML = "⏸"; });
+        audio.addEventListener('pause', () => { playBtn.innerHTML = "▶"; });
+
+        // Restore position if coming back from gallery
+        const savedTime = parseFloat(localStorage.getItem('audioTime') || '0');
+        if (savedTime > 0) audio.currentTime = savedTime;
+
+        // Save position before leaving
+        window.addEventListener('beforeunload', () => {
+            localStorage.setItem('audioTime', audio.currentTime);
+        });
+
+        function togglePlay() {
+            if (audio.paused) {
+                audio.play();
+            } else {
+                audio.pause();
+            }
+        }
+
+        // ===== PARTICLE SYSTEM =====
+        const container = document.getElementById('particles');
+
+        const hearts = ['❤️', '🫰', '🖤', '🤍', '💓'];
+        const flowers = ['✿', '❀', '✾', '❁', '✽'];
+
+        function randomBetween(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        function createHeart() {
+            const el = document.createElement('div');
+            el.classList.add('particle', 'heart');
+            el.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+
+            const size = randomBetween(14, 26);
+            el.style.fontSize = size + 'px';
+            el.style.left = randomBetween(0, 100) + 'vw';
+            el.style.bottom = '-40px';
+
+            const duration = randomBetween(5, 10);
+            const delay = randomBetween(0, 5);
+            el.style.animationDuration = duration + 's';
+            el.style.animationDelay = delay + 's';
+
+            container.appendChild(el);
+            setTimeout(() => el.remove(), (duration + delay) * 1000 + 500);
+        }
+
+        function createFlower() {
+            const el = document.createElement('div');
+            el.classList.add('particle', 'flower');
+
+            const flowerChar = flowers[Math.floor(Math.random() * flowers.length)];
+            el.textContent = flowerChar;
+
+            const size = randomBetween(12, 22);
+            el.style.fontSize = size + 'px';
+
+            // Warna abu-abu putih untuk bunga
+            const greyShade = Math.floor(randomBetween(150, 230));
+            el.style.color = `rgb(${greyShade}, ${greyShade}, ${greyShade})`;
+            el.style.opacity = randomBetween(0.4, 0.9);
+
+            el.style.left = randomBetween(0, 100) + 'vw';
+            el.style.top = '-30px';
+
+            const duration = randomBetween(6, 12);
+            const delay = randomBetween(0, 4);
+            el.style.animationDuration = duration + 's';
+            el.style.animationDelay = delay + 's';
+
+            container.appendChild(el);
+            setTimeout(() => el.remove(), (duration + delay) * 1000 + 500);
+        }
+
+        // Spawn hearts every 600ms
+        setInterval(createHeart, 600);
+
+        // Spawn flowers every 500ms
+        setInterval(createFlower, 500);
+
+        // Initial burst
+        for (let i = 0; i < 8; i++) {
+            setTimeout(createHeart, i * 200);
+            setTimeout(createFlower, i * 150);
+        }
+    </script>
+
+</body>
+
+</html>
